@@ -1,5 +1,7 @@
 import unittest
-from file_cache import FileCacheException, FileCache
+from file_cache import (
+    FileCacheStoreException, FileCacheRetrieveException,
+    FileCache)
 
 
 class TestFileCacheStore(unittest.TestCase):
@@ -18,3 +20,7 @@ class TestFileCacheRetrieve(unittest.TestCase):
 
     def test_retrieve_large_file(self):
         self.assertTrue(True)
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,15 +1,17 @@
 import argparse
-from file_cache import FileCacheException, FileCache
+from file_cache import FileCache
 
 
 def store(name, infile):
     # call your library here
-    pass
+    cache_client = FileCache()
+    return cache_client.store(name, infile)
 
 
 def retrieve(name, outfile):
     # call your library here
-    pass
+    cache_client = FileCache()
+    return cache_client.retrieve(name, outfile)
 
 
 def main():
