@@ -1,4 +1,5 @@
 import argparse
+from file_cache import FileCacheException, FileCache
 
 
 def store(name, infile):
