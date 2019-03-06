@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b15a8256278dc5fa5679eda7200caa0632ee35db74cacb40551a753a3d97e82d"
+            "sha256": "1b867b61cbf06cf4b6083222fcf67e9dc3811562fd1c5250159f68196d79d456"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,10 @@
         ]
     },
     "default": {
+        "memcache-filestore": {
+            "editable": true,
+            "path": "."
+        },
         "pymemcache": {
             "hashes": [
                 "sha256:24634565e4cdf9c625a3c89ac69650812cc3986f4159a56814c932f027605a9c",
