@@ -14,7 +14,6 @@ DESCRIPTION = 'A Python library to store & retrieve files using Memcache'
 URL = 'https://github.com/johnadjei/memcache-filestore'
 EMAIL = 'john@johnadjei.com'
 AUTHOR = 'John Adjei'
-REQUIRES_PYTHON = '>=3.4.0'
 VERSION = None
 
 # What packages are required for this module to be executed?
@@ -91,22 +90,22 @@ class UploadCommand(Command):
 
 # Where the magic happens:
 setup(
-    name=NAME,
+    name=about['__title__'],
     version=about['__version__'],
-    description=DESCRIPTION,
+    description=about['__description__'],
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author=AUTHOR,
-    author_email=EMAIL,
-    python_requires=REQUIRES_PYTHON,
-    url=URL,
+    author=about['__author__'],
+    author_email=about['__author_email__'],
+    python_requires=">=3.4, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
+    url=about['__url__'],
     packages=find_packages(exclude=('tests',)),
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    license='MIT',
+    license=about['__license__'],
     classifiers=[
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
