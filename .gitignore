@@ -11,7 +11,7 @@ toy.py
 cover/
 build/
 docs/_build
-requests.egg-info/
+memcache_filestore.egg-info/
 *.pyc
 *.swp
 *.egg
