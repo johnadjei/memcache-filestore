@@ -4,9 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest = ">=2.8.0,<4.1"
+codecov = "*"
+pytest-mock = "*"
+pytest-cov = "*"
 
 [packages]
 pymemcache = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.4"
