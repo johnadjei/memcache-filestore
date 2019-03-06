@@ -12,6 +12,3 @@ pytest-cov = "*"
 [packages]
 pymemcache = "*"
 memcache-filestore = {editable = true,path = "."}
-
-[requires]
-python_version = "3.4"
