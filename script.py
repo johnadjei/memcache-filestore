@@ -36,12 +36,10 @@ def main():
             # print(ret_bytes.read())
         else:
             parser.print_help()
-    except (FileCacheStoreException, FileCacheRetrieveException) as exc:
+    except (FileCacheStoreException, FileCacheRetrieveException,
+            FileCacheException) as exc:
         print(str(exc))
         exit(1)
-    except FileCacheException as exc:
-        print(str(exc))
-        exit(2)
 
 
 if __name__ == "__main__":
