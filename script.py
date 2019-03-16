@@ -1,5 +1,11 @@
 import argparse
-from file_cache import FileCache
+from file_cache.exceptions import (
+    FileCacheStoreException,
+    FileCacheException,
+    FileCacheRetrieveException
+)
+from file_cache.models import FileCache
+import io
 
 
 def store(name, infile):
@@ -21,13 +27,21 @@ def main():
     parser.add_argument('name', help='Name of the file')
     parser.add_argument('file', help='File for processing')
 
-    args = parser.parse_args()
-    if args.action == 'store':
-        store(args.name, args.file)
-    elif args.action == 'retrieve':
-        retrieve(args.name, args.file)
-    else:
-        parser.print_help()
+    try:
+        args = parser.parse_args()
+        if args.action == 'store':
+            store(args.name, args.file)
+        elif args.action == 'retrieve':
+            ret_bytes = io.BytesIO(retrieve(args.name, args.file))
+            # print(ret_bytes.read())
+        else:
+            parser.print_help()
+    except (FileCacheStoreException, FileCacheRetrieveException) as exc:
+        print(str(exc))
+        exit(1)
+    except FileCacheException as exc:
+        print(str(exc))
+        exit(2)
 
 
 if __name__ == "__main__":
