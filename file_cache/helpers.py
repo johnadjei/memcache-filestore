@@ -13,7 +13,7 @@ def get_md5_checksum(path_to_file):
     """
     with open(path_to_file, 'rb') as the_file:
         file_contents = the_file.read()
-        return hashlib.md5(file_contents).digest()
+        return hashlib.md5(file_contents).hexdigest()
 
 
 def file_as_chunks(path_to_file: str, chunk_size: int)->list:
