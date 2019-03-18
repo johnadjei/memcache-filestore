@@ -27,6 +27,9 @@ def file_as_chunks(path_to_file: str, chunk_size: int)->list:
     chunks = []
     curr_bytes = None
 
+    if not os.path.exists(path_to_file):
+        raise FileCacheException('File does not exist')
+
     file_size = os.path.getsize(path_to_file)
     if file_size > CacheDefaults.MAX_FILE_SIZE.value:
         raise FileCacheException('File size too large')
@@ -38,3 +41,18 @@ def file_as_chunks(path_to_file: str, chunk_size: int)->list:
             chunks.append(curr_bytes)
 
     return chunks
+
+
+def create_binary_file(file_path: str, num_bytes: int)->bool:
+
+    if num_bytes <= 0:
+        raise FileCacheException('Cannot create empty file')
+
+    # ensure number of max chunks for max file size
+    try:
+        with open(file_path, 'wb') as the_file:
+            ex = os.urandom(num_bytes)
+            the_file.write(ex)
+        return True
+    except Exception as exc:
+        raise FileCacheException(str(exc))

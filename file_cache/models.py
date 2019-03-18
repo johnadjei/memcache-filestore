@@ -23,7 +23,7 @@ class FileCache(object):
     + Your library can key the chunks in any way appropriate.
     + Your library should check for file consistency to ensure the data
       retrieved is the same as the original data stored.
-    - Your library should handle edge cases appropriately by raising an
+    + Your library should handle edge cases appropriately by raising an
       Exception or similar. Some examples of edge cases may include: trying to
       store a file that already exists, trying to retrieve a file that does
       not exist, or when a file retrieved is inconsistent/corrupt.
@@ -44,33 +44,6 @@ class FileCache(object):
 
         self.client = Client((host, port))
 
-    def _store_file(self, key: str, chunks: list, checksum: str)->bool:
-        """
-        Store a file into the cache as chunks using a key
-
-        :param key:
-        :param chunks:
-        :param checksum:
-        :return: boolean True on success
-        """
-        # raise exception if file already exists by checking
-        # to see if checksum for this key has already been cached
-        if self.client.get(CacheDefaults.KEY_CHECKSUM.value):
-            raise FileCacheStoreException('Key/file already exists')
-
-        self.client.set(CacheDefaults.KEY_CHECKSUM.value.format(key), checksum)
-
-        # store count of chunks so that you can use it to reconstitute keys
-        self.client.set(CacheDefaults.KEY_NUMCHUNKS.value.format(key),
-                        len(chunks))
-
-        # iterate over each chunk and cache that piece
-        for k, curr_chunk in enumerate(chunks):
-            curr_key = CacheDefaults.KEY_CHUNK.value.format(key, k)
-            self.client.set(curr_key, curr_chunk)
-
-        return True
-
     def store(self, key, path_to_file)->bool:
         """
         Store a file with a key
@@ -88,10 +61,30 @@ class FileCache(object):
         if not os.path.exists(path_to_file):
             raise FileCacheStoreException('File does not exist')
 
-        checksum = get_md5_checksum(path_to_file)
-        chunks = file_as_chunks(path_to_file, CacheDefaults.CHUNK_SIZE.value)
+        # ensure that file size is not too large
+        if os.path.getsize(path_to_file) > CacheDefaults.MAX_FILE_SIZE.value:
+            raise FileCacheStoreException('File size too large')
 
-        return self._store_file(key, chunks, checksum)
+        # ensure that file isn't already cached
+        chksum_in = get_md5_checksum(path_to_file)
+        chksum_key = CacheDefaults.KEY_CHECKSUM.value.format(chksum_in)
+        chksum_cached = self.client.get(chksum_key)
+
+        if chksum_cached is not None:
+            raise FileCacheStoreException('File is already cached')
+        self.client.set(chksum_key, 1)
+
+        # store count of chunks so that you can use it to reconstitute keys
+        chunks = file_as_chunks(path_to_file, CacheDefaults.CHUNK_SIZE.value)
+        self.client.set(CacheDefaults.KEY_NUMCHUNKS.value.format(key),
+                        len(chunks))
+
+        # iterate over each chunk and cache that piece
+        for k, curr_chunk in enumerate(chunks):
+            curr_key = CacheDefaults.KEY_CHUNK.value.format(key, k)
+            self.client.set(curr_key, curr_chunk)
+
+        return True
 
     def retrieve(self, key, path_to_outfile)->bytes:
 
@@ -111,14 +104,15 @@ class FileCache(object):
             raise FileCacheRetrieveException('No chunks for key provided')
         list_of_chunks = [CacheDefaults.KEY_CHUNK.value.format(key, j) for j
                           in range(0, int(num_chunks))]
-        chksum = self.client.get(CacheDefaults.KEY_CHECKSUM.value.format(key))
         l = self.client.get_many(list_of_chunks)
         ret_bytes = b''.join(l.values())[:]
 
         with open(path_to_outfile, 'wb') as outfile:
             outfile.write(ret_bytes)
-            written_chksum = get_md5_checksum(path_to_outfile)
-            if written_chksum == chksum:
+            chksum_written = get_md5_checksum(path_to_outfile)
+            chksum_k = CacheDefaults.KEY_CHECKSUM.value.format(chksum_written)
+
+            if self.client.get(chksum_k) is not None:
                 return ret_bytes
             else:
                 raise FileCacheRetrieveException('Checksums do not match')

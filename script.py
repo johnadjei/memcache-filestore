@@ -5,7 +5,6 @@ from file_cache.exceptions import (
     FileCacheRetrieveException
 )
 from file_cache.models import FileCache
-import io
 
 
 def store(name, infile):
@@ -32,14 +31,16 @@ def main():
         if args.action == 'store':
             store(args.name, args.file)
         elif args.action == 'retrieve':
-            ret_bytes = io.BytesIO(retrieve(args.name, args.file))
-            # print(ret_bytes.read())
+            retrieve(args.name, args.file)
         else:
             parser.print_help()
     except (FileCacheStoreException, FileCacheRetrieveException,
             FileCacheException) as exc:
         print(str(exc))
         exit(1)
+    except Exception as exc:
+        print(str(exc))
+        exit(2)
 
 
 if __name__ == "__main__":
