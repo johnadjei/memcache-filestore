@@ -1,9 +1,0 @@
-__title__ = 'memcache-filestore'
-__description__ = 'A Python library to store & retrieve files using Memcache.'
-__url__ = 'https://github.com/johnadjei/memcache-filestore'
-__version__ = '0.1.0'
-__build__ = 0x0010
-__author__ = 'John Adjei'
-__author_email__ = 'john@johnadjei.com'
-__license__ = 'Apache 2.0'
-__copyright__ = 'Copyright 2019 {}'.format(__author__)
