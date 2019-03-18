@@ -1,3 +1,14 @@
-# memcache-filestore
+Run the following to store
+```bash
+python script.py store bigfile /tmp/bigoldfile.dat
+```
 
-A Python library that will accept a large file (up to 50MB) as an input and store it in Memcache. Once stored, the library will then be used to retrieve the file from Memcache and return it.
+Run the following to retrieve
+```bash
+python script.py retrieve bigfile /tmp/bignewfile.dat
+```
+
+Run the following to test
+```bash
+python -m unittest file_cache
+```
